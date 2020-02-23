@@ -1,0 +1,37 @@
+<%- include("../includes/head.ejs",{pageTitle:pageTitle}) %>
+<section>
+  <article>
+    <form action="/add-product" method="POST">
+      <div class="form-group">
+        <label for="productId">Product Id</label>
+        <input
+          type="text"
+          name="productId"
+          id="productId"
+          placeholder="Product Id"
+        />
+      </div>
+      <div class="form-group">
+        <label for="productName">Product name</label>
+        <input
+          type="text"
+          name="productName"
+          id="productName"
+          placeholder="Product name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="productDescription">Product description</label>
+        <textarea
+          type="text"
+          name="productDescription"
+          id="productDescription"
+          placeholder="Product description"
+          rows="5"
+          cols="5"
+        ></textarea>
+      </div>
+    </form>
+  </article>
+</section>
+<%- include("../includes/end.ejs") %>
