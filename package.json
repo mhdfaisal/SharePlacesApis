@@ -7,7 +7,7 @@
     "start": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mohd Faisal",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
