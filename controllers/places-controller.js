@@ -28,7 +28,7 @@ const getPlaceByID = (req, res, next) => {
       place: dummy_places.find(p => pid === p.placeId)
     });
   } else {
-    next(
+    return next(
       new HttpError(
         "The requested resource was not found against the provided placeId",
         404
@@ -45,7 +45,7 @@ const getPlacesByUser = (req, res, next) => {
   if (places && places.length > 0) {
     res.status(200).json({ message: "Places found successfully", places });
   } else {
-    next(new HttpError("Resource not found for this user ID", 404));
+    return next(new HttpError("Resource not found for this user ID", 404));
   }
 };
 
