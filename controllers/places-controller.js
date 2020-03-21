@@ -1,5 +1,5 @@
 const HttpError = require("../models/http-error.js");
-const dummy_places = [
+let dummy_places = [
   {
     placeId: "p1",
     name: "",
@@ -49,9 +49,30 @@ const getPlacesByUser = (req, res, next) => {
   }
 };
 
-const updatePlace = (req, res, next) => {};
+const updatePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  const { name, description } = req.body;
+  const place = dummy_places.find(p => p.pid === placeId);
+  const placeIndex = dummy_places.findIndex(p => p.pid === placeId);
+  if (placeIndex !== -1) {
+    place = { ...place, name, description };
+    dummy_places[placeIndex] = place;
+    res.status(201).json({ message: "Place updated successfully", place });
+  } else {
+    return new HttpError("Place not found to be updated", 404);
+  }
+};
 
-const deletePlace = (req, res, next) => {};
+const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  const placeIndex = dummy_places.findIndex(p => p.pid === placeId);
+  if (placeIndex !== -1) {
+    dummy_places = dummy_places.filter(p => p.pid !== placeId);
+    res.status(201).json({ message: "Place deleted successfully" });
+  } else {
+    return next(new HttpError("Place not found", 404));
+  }
+};
 
 module.exports.placesController = {
   createPlace,
