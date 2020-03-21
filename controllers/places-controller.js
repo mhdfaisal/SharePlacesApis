@@ -1,4 +1,7 @@
 const HttpError = require("../models/http-error.js");
+const { validationResult } = require("express-validator");
+
+const uuid = require("uuid/v1");
 let dummy_places = [
   {
     placeId: "p1",
@@ -13,8 +16,12 @@ let dummy_places = [
 ];
 
 const createPlace = (req, res, next) => {
-  const { placeId, name, description, location, creator } = req.body;
-  const place = { placeId, name, description, location, creator };
+  const errors = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(422).json({ message: "Un processable data", errors });
+  }
+  const { name, description, location, creator } = req.body;
+  const place = { placeId: uuid(), name, description, location, creator };
   dummy_places.push({ ...place });
   res.status(201).json({ message: "Place added successfully", place });
 };
@@ -51,6 +58,10 @@ const getPlacesByUser = (req, res, next) => {
 
 const updatePlace = (req, res, next) => {
   const placeId = req.params.pid;
+  const { errors } = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ message: "un processable data", errors });
+  }
   const { name, description } = req.body;
   const place = dummy_places.find(p => p.pid === placeId);
   const placeIndex = dummy_places.findIndex(p => p.pid === placeId);

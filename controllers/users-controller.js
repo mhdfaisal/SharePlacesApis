@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const uuid = require("uuid/v4");
+const { validationResults } = "express-validator";
 const users = [
   {
     id: uuid(),
@@ -13,6 +14,10 @@ const getAllUsers = (req, res, next) => {
 };
 
 const userLogin = (req, res, next) => {
+  const { errors } = validationResults(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ message: "un-processable entity", errors });
+  }
   const { email, password } = req.body;
   const userIndex = users.findIndex(u => email === u.email);
   if (userIndex !== -1 && users[userIndex].password === password) {
@@ -23,6 +28,10 @@ const userLogin = (req, res, next) => {
 };
 
 const userSignUp = (req, res, next) => {
+  const { errors } = validationResults(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ message: "un-processable entity", errors });
+  }
   const { name, email, password } = req.body;
   users = [...users, { id: uuid(), name, email, password }];
   res.status(200).json({ message: "User created successfully!", users });
