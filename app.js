@@ -18,6 +18,7 @@ app.use((req, res, next) => {
 //To handle errors with express, we need to create a middleware with four arguments as shown below:
 app.use((error, req, res, next) => {
   // if the response was already sent and their was no error
+  console.log(error);
   if (res.headerSent) {
     next();
   }

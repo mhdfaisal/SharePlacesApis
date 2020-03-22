@@ -17,7 +17,8 @@ let dummy_places = [
 
 const createPlace = (req, res, next) => {
   const errors = validationResult(req);
-  if (!error.isEmpty()) {
+  console.log(errors, "error");
+  if (!errors.isEmpty()) {
     return res.status(422).json({ message: "Un processable data", errors });
   }
   const { name, description, location, creator } = req.body;
@@ -58,7 +59,7 @@ const getPlacesByUser = (req, res, next) => {
 
 const updatePlace = (req, res, next) => {
   const placeId = req.params.pid;
-  const { errors } = validationResult(req);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: "un processable data", errors });
   }

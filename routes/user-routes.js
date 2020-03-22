@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { check } = require("express-validator");
+const { check, withMessage } = require("express-validator");
 
-const userControllers = require("../controllers/users-controller");
+const { userControllers } = require("../controllers/users-controller");
 
 router.get("/", userControllers.getAllUsers);
 router.post(
@@ -12,11 +12,13 @@ router.post(
       .trim()
       .escape()
       .not()
-      .isEmpty(),
+      .isEmpty()
+      .withMessage("Password is required"),
     check("email")
       .normalizeEmail()
       .trim()
       .isEmail()
+      .withMessage("Email is invalid")
   ],
   userControllers.userLogin
 );
@@ -27,17 +29,20 @@ router.post(
       .trim()
       .escape()
       .not()
-      .isEmpty(),
+      .isEmpty()
+      .withMessage("Name is required"),
     check("email")
       .normalizeEmail()
       .trim()
       .escape()
-      .isEmail(),
+      .isEmail()
+      .withMessage("Email is required"),
     check("password")
       .trim()
       .escape()
       .not()
       .isEmpty()
+      .withMessage("Password is required")
   ],
   userControllers.userSignUp
 );

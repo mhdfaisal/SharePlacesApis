@@ -1,7 +1,7 @@
 const express = require("express");
-const placesController = require("../controllers/places-controller");
+const { placesController } = require("../controllers/places-controller");
 const router = express.Router();
-const { check } = "express-validator";
+const { check, withMessage } = require("express-validator");
 
 router.get("/user/:uid", placesController.getPlacesByUser);
 router.get("/:pid", placesController.getPlaceByID);
@@ -12,12 +12,14 @@ router.post(
       .not()
       .isEmpty()
       .trim()
-      .escape(),
+      .escape()
+      .withMessage("Name is a required field"),
     check("description")
       .not()
       .isEmpty()
       .trim()
-      .escape(),
+      .escape()
+      .withMessage("Message is required"),
     check("location")
       .not()
       .isEmpty(),
@@ -26,6 +28,7 @@ router.post(
       .isEmpty()
       .trim()
       .escape()
+      .withMessage("Creator is required")
   ],
   placesController.createPlace
 );

@@ -14,7 +14,7 @@ const getAllUsers = (req, res, next) => {
 };
 
 const userLogin = (req, res, next) => {
-  const { errors } = validationResults(req);
+  const errors = validationResults(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: "un-processable entity", errors });
   }
@@ -28,7 +28,7 @@ const userLogin = (req, res, next) => {
 };
 
 const userSignUp = (req, res, next) => {
-  const { errors } = validationResults(req);
+  const errors = validationResults(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: "un-processable entity", errors });
   }
@@ -37,7 +37,7 @@ const userSignUp = (req, res, next) => {
   res.status(200).json({ message: "User created successfully!", users });
 };
 
-module.exports = {
+module.exports.userControllers = {
   getAllUsers,
   userLogin,
   userSignUp
