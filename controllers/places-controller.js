@@ -1,7 +1,11 @@
 const HttpError = require("../models/http-error.js");
 const { validationResult } = require("express-validator");
-
+//import mongo client
+const MongoClient = require("mongodb").MongoClient;
+const url =
+  "mongodb+srv://fmohd195:EX9cs9u6B5M35CqT@cluster0-y7xyl.mongodb.net/test?retryWrites=true&w=majority";
 const uuid = require("uuid/v1");
+
 let dummy_places = [
   {
     placeId: "p1",
@@ -15,16 +19,40 @@ let dummy_places = [
   }
 ];
 
-const createPlace = (req, res, next) => {
+// const getAllPlaces = (req, res, next) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(401).json({ message: "Un-processable entity", errors });
+//   }
+//   const client = new MongoClient(url);
+
+// };
+
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors, "error");
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: "Un processable data", errors });
+    return res.status(422).json({ message: "Un-processable data", errors });
   }
   const { name, description, location, creator } = req.body;
   const place = { placeId: uuid(), name, description, location, creator };
-  dummy_places.push({ ...place });
-  res.status(201).json({ message: "Place added successfully", place });
+  const client = new MongoClient(url);
+  try {
+    await client.connect();
+    const db = client.db("places");
+    const result = await db.collection("places").insertOne({ ...place });
+  } catch (err) {
+    return next(
+      new HttpError({
+        message: "Some error ocurred while creating a place",
+        code: 400
+      })
+    );
+  }
+  client.close();
+  res.status(201).json({ message: "Place created successfully", place });
+  // dummy_places.push({ ...place });
+  // res.status(201).json({ message: "Place added successfully", place });
 };
 
 const getPlaceByID = (req, res, next) => {
