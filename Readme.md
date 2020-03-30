@@ -1,1 +1,1 @@
-# E-commerce node app
+# Share Places App Backend

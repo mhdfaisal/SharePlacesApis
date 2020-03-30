@@ -4,16 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mohd Faisal",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "pug": "^2.0.4"
+    "express-validator": "^6.4.0",
+    "mongodb": "^3.5.5",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
