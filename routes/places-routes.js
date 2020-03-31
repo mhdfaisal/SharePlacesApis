@@ -1,8 +1,9 @@
 const express = require("express");
-const { placesController } = require("../controllers/places-controller");
+const { placesController } = require("../controllers/places-controller-mongo");
 const router = express.Router();
 const { check, withMessage } = require("express-validator");
 
+router.get("/", placesController.getAllPlaces);
 router.get("/user/:uid", placesController.getPlacesByUser);
 router.get("/:pid", placesController.getPlaceByID);
 router.post(
