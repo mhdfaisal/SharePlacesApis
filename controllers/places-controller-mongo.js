@@ -164,12 +164,23 @@ const updatePlace = async (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
   const placeId = req.params.pid;
-  const placeIndex = dummy_places.findIndex(p => p.pid === placeId);
-  if (placeIndex !== -1) {
-    dummy_places = dummy_places.filter(p => p.pid !== placeId);
-    res.status(201).json({ message: "Place deleted successfully" });
-  } else {
-    return next(new HttpError("Place not found", 404));
+  const _pid = new ObjectId(placeId);
+  let place;
+  const client = new MongoClient(url);
+  try{
+    await client.connect();
+    const db = client.db("places");
+    const place = db.collection("places").findOneAndDelete({_id:_pid});
+  }
+  catch(err){
+    return next(new HttpError("Some error ocurred while deleting the record",500))
+  }
+  client.close();
+  if(place){
+    return res.status(200).json({message:"Place deleted successfully",place});
+  }
+  else{
+    return next(new HttpError("Request resource was not found", 404))
   }
 };
 
