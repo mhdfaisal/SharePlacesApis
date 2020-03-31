@@ -2,6 +2,7 @@ const HttpError = require("../models/http-error.js");
 const { validationResult } = require("express-validator");
 //import mongo client
 const MongoClient = require("mongodb").MongoClient;
+var ObjectId = require("mongodb").ObjectId;
 const url =
   "mongodb+srv://fmohd195:EX9cs9u6B5M35CqT@cluster0-y7xyl.mongodb.net/test?retryWrites=true&w=majority";
 const uuid = require("uuid/v1");
@@ -71,22 +72,28 @@ const createPlace = async (req, res, next) => {
 };
 
 // GET PLACE BY ID CONTROLLER
-const getPlaceByID = (req, res, next) => {
+const getPlaceByID = async (req, res, next) => {
   const { pid } = req.params;
-  const placeIndex = dummy_places.findIndex(p => pid === p.placeId);
-  if (placeIndex !== -1) {
-    res.status(200).json({
-      message: "place found successfully",
-      place: dummy_places.find(p => pid === p.placeId)
-    });
-  } else {
+  let place = [];
+  const client = new MongoClient(url);
+  const _pid = new ObjectId(pid);
+  try {
+    await client.connect();
+    const db = client.db("places");
+    place = await db.collection("places").findOne({ _id: _pid });
+  } catch (err) {
+    console.log(err);
     return next(
-      new HttpError(
-        "The requested resource was not found against the provided placeId",
-        404
-      )
+      new HttpError("Some error ocurred while fetching the place", 500)
     );
   }
+  client.close();
+  if (place) {
+    return res
+      .status(200)
+      .json({ message: "Place fetched successfully", place: place });
+  }
+  return next(new HttpError("The requested resource was not found", 404));
 };
 
 //GET PLACE BY USER CONTROLLER
