@@ -97,35 +97,67 @@ const getPlaceByID = async (req, res, next) => {
 };
 
 //GET PLACE BY USER CONTROLLER
-const getPlacesByUser = (req, res, next) => {
+const getPlacesByUser = async (req, res, next) => {
   const { uid } = req.params;
-  const places = dummy_places.filter(place => {
-    return uid === place.creator;
-  });
-  if (places && places.length > 0) {
-    res.status(200).json({ message: "Places found successfully", places });
-  } else {
-    return next(new HttpError("Resource not found for this user ID", 404));
+  let place;
+  const client = new MongoClient(url);
+  try {
+    await client.connect();
+    const db = client.db("places");
+    place = await db
+      .collection("places")
+      .find({ creator: uid })
+      .toArray();
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError("Some error ocurred while fetching the place", 500)
+    );
   }
+  client.close();
+  if (place) {
+    return res
+      .status(200)
+      .json({ message: "Place fetched successfully", place });
+  }
+  return next(new HttpError("The requested resource was not found!", 404));
 };
 
 //UPDATE A PLACE CONTROLLER
-const updatePlace = (req, res, next) => {
+const updatePlace = async (req, res, next) => {
   const placeId = req.params.pid;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: "un processable data", errors });
   }
   const { name, description } = req.body;
-  const place = dummy_places.find(p => p.pid === placeId);
-  const placeIndex = dummy_places.findIndex(p => p.pid === placeId);
-  if (placeIndex !== -1) {
-    place = { ...place, name, description };
-    dummy_places[placeIndex] = place;
-    res.status(201).json({ message: "Place updated successfully", place });
-  } else {
-    return new HttpError("Place not found to be updated", 404);
+  let modifiedPlace;
+  const client = new MongoClient(url);
+  const _pid = new ObjectId(placeId);
+  try {
+    await client.connect();
+    const db = client.db("places");
+    modifiedPlace = await db
+      .collection("places")
+      .findOneAndUpdate(
+        { _id: _pid },
+        { $set: { name, description } },
+        { returnOriginal: false }
+      );
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError("Some error ocurred while updating the place", 500)
+    );
   }
+  client.close();
+  if (modifiedPlace) {
+    return res.json({
+      message: "Place updated successfully",
+      modifiedPlace: modifiedPlace.value
+    });
+  }
+  return next(new HttpError("The requested resource was not found", 404));
 };
 
 //DELETE PLACE CONTROLLER
