@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { check, withMessage } = require("express-validator");
 
-const { userControllers } = require("../controllers/users-controller");
+const { userControllers } = require("../controllers/users-controller-mongo");
 
 router.get("/", userControllers.getAllUsers);
 router.post(

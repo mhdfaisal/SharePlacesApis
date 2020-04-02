@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use("/api/places", placeRoutes);
-app.use("api/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 app.use((req, res, next) => {
   //to execute in case of not a valid path
