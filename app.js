@@ -4,6 +4,9 @@ const placeRoutes = require("./routes/places-routes");
 const userRoutes = require("./routes/user-routes");
 const HttpError = require("./models/http-error");
 const app = express();
+const mongoose = require("mongoose");
+const url =
+  "mongodb+srv://fmohd195:EX9cs9u6B5M35CqT@cluster0-y7xyl.mongodb.net/test?retryWrites=true&w=majority";
 
 app.use(bodyParser.json());
 
@@ -30,6 +33,13 @@ app.use((error, req, res, next) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("Listening on port 5000");
-});
+mongoose
+  .connect(url)
+  .then(res => {
+    app.listen(5000, () => {
+      console.log("Listening on port 5000");
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });

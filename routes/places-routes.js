@@ -1,5 +1,5 @@
 const express = require("express");
-const { placesController } = require("../controllers/places-controller-mongo");
+const { placesController } = require("../controllers/places-controller");
 const router = express.Router();
 const { check, withMessage } = require("express-validator");
 
@@ -21,30 +21,21 @@ router.post(
       .trim()
       .escape()
       .withMessage("Message is required"),
-    check("location")
-      .not()
-      .isEmpty(),
+    check("location").not().isEmpty(),
     check("creator")
       .not()
       .isEmpty()
       .trim()
       .escape()
-      .withMessage("Creator is required")
+      .withMessage("Creator is required"),
   ],
   placesController.createPlace
 );
 router.patch(
   "/:pid",
   [
-    check("name")
-      .trim()
-      .escape()
-      .not()
-      .isEmpty(),
-    check("description")
-      .trim()
-      .escape()
-      .isLength({ min: 5 })
+    check("name").trim().escape().not().isEmpty(),
+    check("description").trim().escape().isLength({ min: 5 }),
   ],
   placesController.updatePlace
 );
