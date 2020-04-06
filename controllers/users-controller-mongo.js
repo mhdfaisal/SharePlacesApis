@@ -10,8 +10,8 @@ const users = [
     name: "Faisal",
     email: "test@test.com",
     password: "test",
-    image: "https://i.picsum.photos/id/998/200/300.jpg"
-  }
+    image: "https://i.picsum.photos/id/998/200/300.jpg",
+  },
 ];
 const getAllUsers = async (req, res, next) => {
   const client = new MongoClient(url);
@@ -19,17 +19,14 @@ const getAllUsers = async (req, res, next) => {
   try {
     await client.connect();
     const db = client.db("users");
-    users = await db
-      .collection("users")
-      .find()
-      .toArray();
+    users = await db.collection("users").find().toArray();
   } catch (err) {
     console.log(err);
     return next(new HttpError("Some error ocurred while fetching user", 500));
   }
   client.close();
   if (users) {
-    res
+    return res
       .status(200)
       .json({ message: "Users were fetched successfully!", users });
   }
@@ -78,7 +75,7 @@ const userSignUp = async (req, res, next) => {
       name,
       email,
       password,
-      image: "https://i.picsum.photos/id/998/200/300.jpg"
+      image: "https://i.picsum.photos/id/998/200/300.jpg",
     });
   } catch (err) {
     console.log(err);
@@ -91,5 +88,5 @@ const userSignUp = async (req, res, next) => {
 module.exports.userControllers = {
   getAllUsers,
   userLogin,
-  userSignUp
+  userSignUp,
 };

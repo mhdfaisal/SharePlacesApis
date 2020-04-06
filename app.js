@@ -6,7 +6,7 @@ const HttpError = require("./models/http-error");
 const app = express();
 const mongoose = require("mongoose");
 const url =
-  "mongodb+srv://fmohd195:EX9cs9u6B5M35CqT@cluster0-y7xyl.mongodb.net/test?retryWrites=true&w=majority";
+  "mongodb+srv://fmohd195:EX9cs9u6B5M35CqT@cluster0-y7xyl.mongodb.net/sharePlaces?retryWrites=true&w=majority";
 
 app.use(bodyParser.json());
 
@@ -28,18 +28,18 @@ app.use((error, req, res, next) => {
   //else send error in response
   else {
     res.status(error.code || 404).json({
-      message: error.message || "Some error ocurred"
+      message: error.message || "Some error ocurred",
     });
   }
 });
 
 mongoose
   .connect(url)
-  .then(res => {
+  .then((res) => {
     app.listen(5000, () => {
       console.log("Listening on port 5000");
     });
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
