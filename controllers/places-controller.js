@@ -23,6 +23,9 @@ const createPlace = async (req, res, next) => {
       new HttpError("Some error ocurred while creating a place", 500)
     );
   }
+  return res
+    .status(200)
+    .json({ message: "Place created successfully!", createdPlace });
 };
 
 //Get place by ID
@@ -124,11 +127,12 @@ const updatePlace = async (req, res, next) => {
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
   const errors = validationResult(req);
+  let place;
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: "malformed request body", errors });
   }
   try {
-    const place = await Places.findById(placeId);
+    place = await Places.findById(placeId);
     if (!place) {
       return res.status(404).json({ message: "Place not found" });
     }

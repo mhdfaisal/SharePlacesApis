@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { check, withMessage } = require("express-validator");
 
-const { userControllers } = require("../controllers/users-controller-mongo");
+const { userControllers } = require("../controllers/users-controller");
 
 router.get("/", userControllers.getAllUsers);
 router.post(
@@ -18,7 +18,7 @@ router.post(
       .normalizeEmail()
       .trim()
       .isEmail()
-      .withMessage("Email is invalid")
+      .withMessage("Email is invalid"),
   ],
   userControllers.userLogin
 );
@@ -42,7 +42,7 @@ router.post(
       .escape()
       .not()
       .isEmpty()
-      .withMessage("Password is required")
+      .withMessage("Password is required"),
   ],
   userControllers.userSignUp
 );
